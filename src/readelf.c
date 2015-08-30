@@ -4971,7 +4971,7 @@ print_cfa_program (const unsigned char *readp, const unsigned char *const endp,
 	  case DW_CFA_set_loc:
 	    if ((uint64_t) (endp - readp) < 1)
 	      goto invalid;
-	    get_uleb128 (op1, readp, endp);
+	    op1 = read_addr_unaligned_inc (ptr_size, dbg, readp);
 	    op1 += vma_base;
 	    printf ("     set_loc %" PRIu64 "\n", op1 * code_align);
 	    break;
