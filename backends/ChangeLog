@@ -1,3 +1,8 @@
+2015-09-02  Ben Gamari  <ben@smart-cactus.org>
+
+	* i386_initreg.c: Add support for capturing of registers from local process
+	* x86_64_initreg.c: Add support for capturing of registers from local process
+
 2015-06-26  Pino Toscano  <toscano.pino@tiscali.it>
 
 	* i386_initreg.c: Reduce scope of some includes to match their usage.

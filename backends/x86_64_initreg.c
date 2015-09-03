@@ -71,3 +71,38 @@ x86_64_set_initial_registers_tid (pid_t tid __attribute__ ((unused)),
   return setfunc (0, 17, dwarf_regs, arg);
 #endif /* __x86_64__ */
 }
+
+bool
+x86_64_set_initial_registers_local (
+			  ebl_tid_registers_t *setfunc __attribute__ ((unused)),
+				  void *arg __attribute__ ((unused)))
+{
+#if !defined(__x86_64__) || !defined(__linux__)
+  return false;
+#else /* __x86_64__ */
+  Dwarf_Word dwarf_regs[17];
+  __asm__ ("movq %%rax, 0x00(%0)\n\t"
+    "movq %%rdx, 0x08(%0)\n\t"
+    "movq %%rcx, 0x10(%0)\n\t"
+    "movq %%rbx, 0x18(%0)\n\t"
+    "movq %%rsi, 0x20(%0)\n\t"
+    "movq %%rdi, 0x28(%0)\n\t"
+    "movq %%rbp, 0x30(%0)\n\t"
+    "movq %%rsp, 0x38(%0)\n\t"
+    "movq %%r8,  0x40(%0)\n\t"
+    "movq %%r9,  0x48(%0)\n\t"
+    "movq %%r10, 0x50(%0)\n\t"
+    "movq %%r11, 0x58(%0)\n\t"
+    "movq %%r12, 0x60(%0)\n\t"
+    "movq %%r13, 0x68(%0)\n\t"
+    "movq %%r14, 0x70(%0)\n\t"
+    "movq %%r15, 0x78(%0)\n\t"
+    "lea 0(%%rip), %%rax\n\t"
+    "movq %%rax, 0x80(%0)\n\t"
+    :                            /* no output */
+    :"r" (&dwarf_regs[0])        /* input */
+    :"%rax"                      /* clobbered */
+    );
+  return setfunc (0, 17, dwarf_regs, arg);
+#endif /* __x86_64__ */
+}

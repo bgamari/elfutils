@@ -417,6 +417,14 @@ extern bool ebl_set_initial_registers_tid (Ebl *ebl,
 					   void *arg)
   __nonnull_attribute__ (1, 3);
 
+/* Callback to fetch process data from current thread.
+   EBL architecture has to have EBL_FRAME_NREGS > 0, otherwise the
+   backend doesn't support unwinding and this function call may crash.  */
+extern bool ebl_set_initial_registers_local (Ebl *ebl,
+                                             ebl_tid_registers_t *setfunc,
+                                             void *arg)
+     __nonnull_attribute__ (1, 3);
+
 /* Number of registers to allocate for ebl_set_initial_registers_tid.
    EBL architecture can unwind iff EBL_FRAME_NREGS > 0.  */
 extern size_t ebl_frame_nregs (Ebl *ebl)

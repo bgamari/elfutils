@@ -66,6 +66,7 @@ i386_init (elf, machine, eh, ehlen)
   /* gcc/config/ #define DWARF_FRAME_REGISTERS.  For i386 it is 17, why?  */
   eh->frame_nregs = 9;
   HOOK (eh, set_initial_registers_tid);
+  HOOK (eh, set_initial_registers_local);
 
   return MODVERSION;
 }

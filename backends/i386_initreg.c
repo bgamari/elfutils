@@ -77,3 +77,48 @@ i386_set_initial_registers_tid (pid_t tid __attribute__ ((unused)),
   return setfunc (0, 9, dwarf_regs, arg);
 #endif /* __i386__ || __x86_64__ */
 }
+
+bool
+i386_set_initial_registers_local (ebl_tid_registers_t *setfunc __attribute__ ((unused)),
+				void *arg __attribute__ ((unused)))
+{
+#if (!defined __i386__ && !defined __x86_64__) || !defined(__linux__)
+  return false;
+#else /* __i386__ || __x86_64__ */
+  Dwarf_Word dwarf_regs[9];
+# if defined __i386__
+  __asm__ ("movl %%eax, 0x00(%0)\n\t"
+           "movl %%ecx, 0x04(%0)\n\t"
+           "movl %%edx, 0x08(%0)\n\t"
+           "movl %%ebx, 0x0c(%0)\n\t"
+           "movl %%esp, 0x10(%0)\n\t"
+           "movl %%ebp, 0x14(%0)\n\t"
+           "movl %%esp, 0x18(%0)\n\t"
+           "movl %%edi, 0x1c(%0)\n\t"
+           "lea 0(%%eip), %%eax\n\t"
+           "movl %%eax, 0x20(%0)\n\t"
+           :                            /* no output */
+           :"r" (&dwarf_regs[0])        /* input */
+           :"%eax"                      /* clobbered */
+           );
+# elif defined __x86_64__
+  __asm__ ("movq %%rax, 0x00(%0)\n\t"
+           "movq %%rcx, 0x08(%0)\n\t"
+           "movq %%rdx, 0x10(%0)\n\t"
+           "movq %%rbx, 0x18(%0)\n\t"
+           "movq %%rsp, 0x20(%0)\n\t"
+           "movq %%rbp, 0x28(%0)\n\t"
+           "movq %%rsp, 0x30(%0)\n\t"
+           "movq %%rdi, 0x38(%0)\n\t"
+           "lea 0(%%rip), %%rax\n\t"
+           "movq %%rax, 0x40(%0)\n\t"
+           :                            /* no output */
+           :"r" (&dwarf_regs[0])        /* input */
+           :"%rax"                      /* clobbered */
+           );
+# else /* (__i386__ || __x86_64__) && (!__i386__ && !__x86_64__) */
+#  error "source file error, it cannot happen"
+# endif /* (__i386__ || __x86_64__) && (!__i386__ && !__x86_64__) */
+  return setfunc (0, 9, dwarf_regs, arg);
+#endif /* __i386__ || __x86_64__ */
+}

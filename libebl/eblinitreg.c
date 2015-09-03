@@ -44,6 +44,17 @@ ebl_set_initial_registers_tid (Ebl *ebl, pid_t tid,
   return ebl->set_initial_registers_tid (tid, setfunc, arg);
 }
 
+bool
+ebl_set_initial_registers_local (Ebl *ebl,
+                               ebl_tid_registers_t *setfunc,
+                               void *arg)
+{
+  /* Otherwise caller could not allocate THREAD frame of proper size.
+     If set_initial_registers_local is unsupported then FRAME_NREGS is zero.  */
+  assert (ebl->set_initial_registers_local != NULL);
+  return ebl->set_initial_registers_local (setfunc, arg);
+}
+
 size_t
 ebl_frame_nregs (Ebl *ebl)
 {

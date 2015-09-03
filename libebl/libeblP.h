@@ -60,7 +60,8 @@ struct ebl
   /* Size of entry in Sysv-style hash table.  */
   int sysvhash_entrysize;
 
-  /* Number of registers to allocate for ebl_set_initial_registers_tid.
+  /* Number of registers to allocate for ebl_set_initial_registers_tid
+     and ebl_set_initial_registers_local.
      Ebl architecture can unwind iff FRAME_NREGS > 0.  */
   size_t frame_nregs;
 
