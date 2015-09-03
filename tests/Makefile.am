@@ -49,7 +49,8 @@ check_PROGRAMS = arextract arsymtest newfile saridx scnnames sectiondump \
 		  alldts md5-sha1-test typeiter typeiter2 low_high_pc \
 		  test-elf_cntl_gelf_getshdr dwflsyms dwfllines \
 		  dwfl-report-elf-align varlocs backtrace backtrace-child \
-		  backtrace-data backtrace-dwarf debuglink debugaltlink \
+		  backtrace-data backtrace-dwarf backtrace-local \
+		  debuglink debugaltlink \
 		  buildid deleted deleted-lib.so aggregate_size vdsosyms \
 		  getsrc_die strptr newdata elfstrtab
 
@@ -276,6 +277,7 @@ EXTRA_DIST = run-arextract.sh run-arsymtest.sh \
 	     run-backtrace-native-core.sh run-backtrace-native-core-biarch.sh \
 	     run-backtrace-core-x86_64.sh run-backtrace-core-i386.sh \
 	     run-backtrace-core-x32.sh \
+	     run-backtrace-local.sh \
 	     backtrace-subr.sh backtrace.i386.core.bz2 backtrace.i386.exec.bz2 \
 	     backtrace.x86_64.core.bz2 backtrace.x86_64.exec.bz2 \
 	     backtrace.ppc.core.bz2 backtrace.ppc.exec.bz2 \
@@ -434,6 +436,7 @@ backtrace_child_biarch_SOURCES = backtrace-child.c
 backtrace_data_LDADD = $(libdw) $(libelf)
 backtrace_dwarf_CFLAGS = -Wno-unused-parameter
 backtrace_dwarf_LDADD = $(libdw) $(libelf)
+backtrace_local_LDADD = $(libdw) $(libelf)
 debuglink_LDADD = $(libdw) $(libelf)
 debugaltlink_LDADD = $(libdw) $(libelf)
 buildid_LDADD = $(libdw) $(libelf)
