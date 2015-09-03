@@ -317,6 +317,8 @@ ELFUTILS_0.161 {
     # presume that it uses dwarf_peel_type.
     dwarf_aggregate_size;
 
+    dwfl_linux_local_attach;
+
     dwarf_getmacros_off;
     dwarf_macro_getsrcfiles;
     dwarf_macro_getparamcnt;

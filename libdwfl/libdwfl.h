@@ -733,6 +733,13 @@ extern int dwfl_core_file_attach (Dwfl *dwfl, Elf *elf);
 extern int dwfl_linux_proc_attach (Dwfl *dwfl, pid_t pid,
 				   bool assume_ptrace_stopped);
 
+/* Calls dwfl_attach_state with Dwfl_Thread_Callbacks setup for extracting
+   the current thread's state from the proc file system, extracting register
+   values from the calling context of dwfl_thread_getframes. Returns zero on
+   success, -1 if dwfl_attach_state failed, or an errno code if opening the proc
+   files failed. */
+extern int dwfl_linux_local_attach (Dwfl *dwfl);
+
 /* Return PID for the process associated with DWFL.  Function returns -1 if
    dwfl_attach_state was not called for DWFL.  */
 pid_t dwfl_pid (Dwfl *dwfl)
