@@ -504,7 +504,7 @@ extern const char *dwfl_module_addrinfo (Dwfl_Module *mod, GElf_Addr address,
 					 GElf_Off *offset, GElf_Sym *sym,
 					 GElf_Word *shndxp, Elf **elfp,
 					 Dwarf_Addr *bias)
-  __nonnull_attribute__ (3);
+  __nonnull_attribute__ (3, 4);
 
 /* Find the symbol that ADDRESS lies inside, and return detailed
    information as for dwfl_module_getsym (above).  Note that like
