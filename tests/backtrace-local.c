@@ -86,6 +86,23 @@ dump_backtrace()
     goto done;
   }
 
+  // dwfl_linux_local_attach loaded the ebl backend above.
+  // now we need to report it to dwfl. Ugh.
+  dwfl_report_begin(dwfl);
+  ret = dwfl_linux_proc_report(dwfl, getpid());
+  if (ret < 0) {
+    fprintf (stderr, "dwfl_linux_proc_report failed: %s",
+             dwfl_errmsg(dwfl_errno()));
+    goto done;
+  }
+
+  ret = dwfl_report_end (dwfl, NULL, NULL);
+  if (ret) {
+    fprintf (stderr, "dwfl_report_end failed: %s", dwfl_errmsg(dwfl_errno()));
+    goto done;
+  }
+
+  // Now we finally try to get a backtrace
   ret = dwfl_getthread_frames (dwfl, getpid(), frame_cb, dwfl) != 0;
   if (ret) {
     fprintf (stderr, "getthread_frames failed: %s\n",
