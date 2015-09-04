@@ -383,6 +383,11 @@ extern int dwfl_linux_proc_find_elf (Dwfl_Module *mod, void **userdata,
 				     const char *module_name, Dwarf_Addr base,
 				     char **file_name, Elf **);
 
+/* Call dwfl_report_module for each file mapped into the current process's
+   address space by the system's dynamic linker.
+   Returns zero on success or -1 if dwfl_report_module failed. */
+extern int dwfl_linux_dl_report (Dwfl *dwfl);
+
 /* Standard argument parsing for using a standard callback set.  */
 struct argp;
 extern const struct argp *dwfl_standard_argp (void) __attribute__ ((const));

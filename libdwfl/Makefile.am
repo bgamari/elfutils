@@ -50,6 +50,7 @@ libdwfl_a_SOURCES = dwfl_begin.c dwfl_end.c dwfl_error.c dwfl_version.c \
 		    dwfl_build_id_find_elf.c \
 		    dwfl_build_id_find_debuginfo.c \
 		    linux-kernel-modules.c linux-proc-maps.c \
+		    linux-dl-maps.c \
 		    dwfl_addrmodule.c dwfl_addrdwarf.c \
 		    cu.c dwfl_module_nextcu.c dwfl_nextcu.c dwfl_cumodule.c \
 		    dwfl_module_addrdie.c dwfl_addrdie.c \

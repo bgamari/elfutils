@@ -1,3 +1,8 @@
+2015-08-04  Ben Gamari <ben@smart-cactus.org>
+
+	* linux-dl-maps.c: Add interface to grab mapped objects from
+	dynamic linker with dl_iterate_phdr GNU extension.
+
 2015-08-14  Dodji Seketeli  <dodji@seketeli.org>
 
 	* find-debuginfo.c (find_debuginfo_in_path): Try to locate the

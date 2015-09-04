@@ -115,6 +115,7 @@ ELFUTILS_0.122 {
     dwfl_linux_proc_find_elf;
     dwfl_linux_proc_maps_report;
     dwfl_linux_proc_report;
+    dwfl_linux_dl_report;
     dwfl_module_addrdie;
     dwfl_module_addrname;
     dwfl_module_getdwarf;
