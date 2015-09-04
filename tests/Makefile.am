@@ -436,6 +436,7 @@ backtrace_child_biarch_SOURCES = backtrace-child.c
 backtrace_data_LDADD = $(libdw) $(libelf)
 backtrace_dwarf_CFLAGS = -Wno-unused-parameter
 backtrace_dwarf_LDADD = $(libdw) $(libelf)
+backtrace_local_CFLAGS = -Wno-unused-parameter
 backtrace_local_LDADD = $(libdw) $(libelf)
 debuglink_LDADD = $(libdw) $(libelf)
 debugaltlink_LDADD = $(libdw) $(libelf)
