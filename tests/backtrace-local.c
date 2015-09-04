@@ -39,11 +39,12 @@ int frame_cb(Dwfl_Frame *frame, void *arg)
   dwfl_frame_pc (frame, &pc, NULL);
   Dwfl_Module *mod = dwfl_addrmodule (dwfl, pc);
   GElf_Off off;
-  const char *sym = dwfl_module_addrinfo (mod, pc,
-                                          &off, NULL,
-                                          NULL, NULL,
-                                          NULL);
-  printf("%s\n", sym ? sym : "null");
+  GElf_Sym sym;
+  const char *sym_name = dwfl_module_addrinfo (mod, pc,
+                                               &off, &sym,
+                                               NULL, NULL,
+                                               NULL);
+  printf("%s\n", sym_name ? sym_name : "null");
   return DWARF_CB_OK;
 }
 
