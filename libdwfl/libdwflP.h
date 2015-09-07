@@ -44,6 +44,12 @@
 #include "../libdw/libdwP.h"	/* We need its INTDECLs.  */
 #include "../libdwelf/libdwelfP.h"
 
+#ifdef DEBUG
+#define DBG(s, ...) fprintf(stderr, "%s:%d: " s, __FILE__, __LINE__, __VA_ARGS__)
+#else
+#define DBG(s, ...)
+#endif  /* DEBUG */
+
 typedef struct Dwfl_Process Dwfl_Process;
 
 /* gettext helper macros.  */
@@ -757,6 +763,5 @@ INTDECL (dwfl_frame_pc)
 
 /* The default used by dwfl_standard_find_debuginfo.  */
 #define DEFAULT_DEBUGINFO_PATH ":.debug:/usr/lib/debug"
-
 
 #endif	/* libdwflP.h */

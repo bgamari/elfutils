@@ -214,8 +214,11 @@ __libdwfl_getelf (Dwfl_Module *mod)
 						    &mod->main.elf);
   const bool fallback = mod->main.elf == NULL && mod->main.fd < 0;
   mod->elferr = open_elf (mod, &mod->main);
-  if (mod->elferr != DWFL_E_NOERROR)
+  if (mod->elferr != DWFL_E_NOERROR) {
+    DBG("Failed to open ELF %s: %s",
+        mod->main.name, dwfl_errmsg(mod->elferr));
     return;
+  }
 
   if (!mod->main.valid)
     {
