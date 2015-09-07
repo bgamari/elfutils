@@ -27,6 +27,9 @@
    not, see <http://www.gnu.org/licenses/>.  */
 
 #include "libdwflP.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <dirent.h>
@@ -247,6 +250,8 @@ static void
 pid_detach (Dwfl *dwfl __attribute__ ((unused)), void *dwfl_arg)
 {
   struct __libdwfl_pid_arg *pid_arg = dwfl_arg;
+  elf_end (pid_arg->self);
+  close (pid_arg->self_fd);
   closedir (pid_arg->dir);
   free (pid_arg);
 }
@@ -332,13 +337,30 @@ dwfl_linux_proc_attach (Dwfl *dwfl, pid_t pid, bool assume_ptrace_stopped)
       goto fail;
     }
 
-  char dirname[64];
-  int i = snprintf (dirname, sizeof (dirname), "/proc/%ld/task", (long) pid);
-  assert (i > 0 && i < (ssize_t) sizeof (dirname) - 1);
-  DIR *dir = opendir (dirname);
+  char name[64];
+  int i = snprintf (name, sizeof (name), "/proc/%ld/task", (long) pid);
+  assert (i > 0 && i < (ssize_t) sizeof (name) - 1);
+  DIR *dir = opendir (name);
   if (dir == NULL)
     {
       err = errno;
+      goto fail;
+    }
+  i = snprintf (name, sizeof (name), "/proc/%ld/exe", (long) pid);
+  assert (i > 0 && i < (ssize_t) sizeof (name) - 1);
+  int fd = open (name, O_RDONLY);
+  if (fd < 0)
+    {
+      err = errno;
+      goto fail;
+    }
+  Elf *self = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+  if (self == NULL)
+    {
+      /* We need to return an errno, so we should really translate the
+	 elf_errno back to an errno, but lets just assume it is ENOMEM.  */
+      err = ENOMEM;
+      close (fd);
       goto fail;
     }
   struct __libdwfl_pid_arg *pid_arg = malloc (sizeof *pid_arg);
@@ -349,11 +371,15 @@ dwfl_linux_proc_attach (Dwfl *dwfl, pid_t pid, bool assume_ptrace_stopped)
       goto fail;
     }
   pid_arg->dir = dir;
+  pid_arg->self = self;
+  pid_arg->self_fd = fd;
   pid_arg->tid_attached = 0;
   pid_arg->assume_ptrace_stopped = assume_ptrace_stopped;
-  if (! INTUSE(dwfl_attach_state) (dwfl, NULL, pid, &pid_thread_callbacks,
+  if (! INTUSE(dwfl_attach_state) (dwfl, self, pid, &pid_thread_callbacks,
 				   pid_arg))
     {
+      elf_end (self);
+      close (fd);
       closedir (dir);
       free (pid_arg);
       return -1;

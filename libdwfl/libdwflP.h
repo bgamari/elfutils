@@ -401,6 +401,8 @@ struct dwfl_arange
 struct __libdwfl_pid_arg
 {
   DIR *dir;
+  Elf *self;
+  int self_fd;
   /* It is 0 if not used.  */
   pid_t tid_attached;
   /* Valid only if TID_ATTACHED is not zero.  */
