@@ -45,7 +45,7 @@ local_memory_read (Dwfl *dwfl __attribute__ ((unused)),
 		   Dwarf_Addr addr, Dwarf_Word *result,
 		   void *arg __attribute__ ((unused)))
 {
-  *result = *(Dwarf_Word *) addr;
+  *result = *(Dwarf_Word *) (uintptr_t) addr;
   return true;
 }
 
@@ -81,7 +81,7 @@ initial_unwind_callback (Dwfl_Frame *state, void *arg)
   Dwfl *dwfl = dwfl_thread_dwfl (dwfl_frame_thread (state));
   Dwfl_Module *mod_here;
 pc_here:
-  mod_here = dwfl_addrmodule (dwfl, (Dwarf_Addr) &&pc_here);
+  mod_here = dwfl_addrmodule (dwfl, (Dwarf_Addr) (uintptr_t) &&pc_here);
 
   Dwarf_Addr pc;
   if (! dwfl_frame_pc (state, &pc, NULL))
