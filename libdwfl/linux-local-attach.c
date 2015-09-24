@@ -71,6 +71,35 @@ local_getthread (Dwfl *dwfl __attribute__ ((unused)),
   return true;
 }
 
+/* initial unwind callback.  */
+
+static int
+initial_unwind_callback (Dwfl_Frame *state, void *arg)
+{
+  bool *mod_seen = (bool *) arg;
+
+  Dwfl *dwfl = dwfl_thread_dwfl (dwfl_frame_thread (state));
+  Dwfl_Module *mod_here;
+pc_here:
+  mod_here = dwfl_addrmodule (dwfl, (Dwarf_Addr) &&pc_here);
+
+  Dwarf_Addr pc;
+  if (! dwfl_frame_pc (state, &pc, NULL))
+    return -1;
+
+  Dwfl_Module *mod_frame = dwfl_addrmodule (dwfl, pc);
+  if (mod_here == mod_frame)
+    {
+      *mod_seen = true;
+      return DWARF_CB_OK;
+    }
+  else if (*mod_seen)
+    return DWARF_CB_ABORT;
+
+  return DWARF_CB_OK;
+}
+
+
 /* Implement the ebl_set_initial_registers_tid setfunc callback.  */
 
 static bool
@@ -83,7 +112,10 @@ local_thread_state_registers_cb (int firstreg, unsigned nregs,
       assert (firstreg == -1);
       assert (nregs == 1);
       INTUSE(dwfl_thread_state_register_pc) (thread, *regs);
-      return true;
+
+      // We assume pc is set last. So we are done. Now unwind a bit.
+      bool seen = false;
+      return initial_thread_unwind (thread, initial_unwind_callback, &seen);
     }
   assert (nregs > 0);
   return INTUSE(dwfl_thread_state_registers) (thread, firstreg, nregs, regs);

@@ -472,3 +472,30 @@ dwfl_thread_getframes (Dwfl_Thread *thread,
   return 0;
 }
 INTDEF(dwfl_thread_getframes)
+
+bool
+internal_function
+initial_thread_unwind (Dwfl_Thread *thread,
+                       int (*callback) (Dwfl_Frame *state, void *arg),
+		       void *arg)
+{
+  Dwfl_Frame *state;
+  do
+    {
+      state = thread->unwound;
+      int cb = callback (state, arg);
+      if (cb < 0)
+	return false; /* callback thinks something went wrong. */
+      else if (cb == DWARF_CB_ABORT)
+	return true; /* we are where we want.  */
+
+      __libdwfl_frame_unwind (state);
+      /* The old frame is no longer needed.  */
+      state_free (thread->unwound);
+      state = thread->unwound;
+    }
+  while (state && state->pc_state == DWFL_FRAME_STATE_PC_SET);
+
+  /* Callback wants to unwind even further, but we cannot.  */
+  return false;
+}

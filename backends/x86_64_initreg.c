@@ -103,6 +103,10 @@ x86_64_set_initial_registers_local (
     :"r" (&dwarf_regs[0])        /* input */
     :"%rax"                      /* clobbered */
     );
-  return setfunc (0, 17, dwarf_regs, arg);
+  if (! setfunc (0, 17, dwarf_regs, arg))
+    return false;
+
+  /* Explicitly set pc, to signal we are done setting registers.  */
+  return setfunc (-1, 1, &dwarf_regs[16], arg);
 #endif /* __x86_64__ */
 }

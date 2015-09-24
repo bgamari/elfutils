@@ -584,6 +584,12 @@ extern void __libdwfl_process_free (Dwfl_Process *process)
 extern void __libdwfl_frame_unwind (Dwfl_Frame *state)
   internal_function;
 
+extern bool initial_thread_unwind (Dwfl_Thread *thread,
+				   int (*callback) (Dwfl_Frame *state,
+						    void *arg),
+				   void *arg)
+  internal_function;
+
 /* Align segment START downwards or END upwards addresses according to DWFL.  */
 extern GElf_Addr __libdwfl_segment_start (Dwfl *dwfl, GElf_Addr start)
   internal_function;
