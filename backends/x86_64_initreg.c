@@ -81,7 +81,8 @@ x86_64_set_initial_registers_local (
   return false;
 #else /* __x86_64__ */
   Dwarf_Word dwarf_regs[17];
-  __asm__ ("movq %%rax, 0x00(%0)\n\t"
+  __asm__ (
+    "movq %%rax, 0x00(%0)\n\t"
     "movq %%rdx, 0x08(%0)\n\t"
     "movq %%rcx, 0x10(%0)\n\t"
     "movq %%rbx, 0x18(%0)\n\t"
