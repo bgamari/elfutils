@@ -90,3 +90,41 @@ arm_set_initial_registers_tid (pid_t tid __attribute__ ((unused)),
 #endif
 #endif
 }
+
+bool
+arm_set_initial_registers_local (
+			  ebl_tid_registers_t *setfunc __attribute__ ((unused)),
+				  void *arg __attribute__ ((unused)))
+{
+#if !defined(__arm__) || !defined(__aarch64__)
+  return false;
+#else /* __arm__ */
+  Dwarf_Word dwarf_regs[16];
+  __asm__ (
+    "mov %%r0, 0x00(%0)\n\t"
+    "mov %%r1, 0x08(%0)\n\t"
+    "mov %%r2, 0x10(%0)\n\t"
+    "mov %%r3, 0x18(%0)\n\t"
+    "mov %%r4, 0x20(%0)\n\t"
+    "mov %%r5, 0x28(%0)\n\t"
+    "mov %%r6, 0x30(%0)\n\t"
+    "mov %%r7, 0x38(%0)\n\t"
+    "mov %%r8,  0x40(%0)\n\t"
+    "mov %%r9,  0x48(%0)\n\t"
+    "mov %%r10, 0x50(%0)\n\t"
+    "mov %%r11, 0x58(%0)\n\t"
+    "mov %%r12, 0x60(%0)\n\t"
+    "mov %%r13, 0x68(%0)\n\t"
+    "mov %%r14, 0x70(%0)\n\t"
+    "mov %%r15, 0x78(%0)\n\t"
+    :                            /* no output */
+    :"r" (&dwarf_regs[0])        /* input */
+    :"%r0"                       /* clobbered */
+    );
+  if (! setfunc (0, 17, dwarf_regs, arg))
+    return false;
+
+  /* Explicitly set pc, to signal we are done setting registers.  */
+  return setfunc (-1, 1, &dwarf_regs[16], arg);
+#endif /* __arm__ */
+}
