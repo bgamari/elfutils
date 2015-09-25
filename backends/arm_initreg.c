@@ -101,22 +101,22 @@ arm_set_initial_registers_local (
 #else /* __arm__ */
   Dwarf_Word dwarf_regs[16];
   __asm__ (
-    "mov %%r0, 0x00(%0)\n\t"
-    "mov %%r1, 0x08(%0)\n\t"
-    "mov %%r2, 0x10(%0)\n\t"
-    "mov %%r3, 0x18(%0)\n\t"
-    "mov %%r4, 0x20(%0)\n\t"
-    "mov %%r5, 0x28(%0)\n\t"
-    "mov %%r6, 0x30(%0)\n\t"
-    "mov %%r7, 0x38(%0)\n\t"
-    "mov %%r8,  0x40(%0)\n\t"
-    "mov %%r9,  0x48(%0)\n\t"
-    "mov %%r10, 0x50(%0)\n\t"
-    "mov %%r11, 0x58(%0)\n\t"
-    "mov %%r12, 0x60(%0)\n\t"
-    "mov %%r13, 0x68(%0)\n\t"
-    "mov %%r14, 0x70(%0)\n\t"
-    "mov %%r15, 0x78(%0)\n\t"
+    "str r0,  [%0, 0x00]\n\t"
+    "str r1,  [%0, 0x08]\n\t"
+    "str r2,  [%0, 0x10]\n\t"
+    "str r3,  [%0, 0x18]\n\t"
+    "str r4,  [%0, 0x20]\n\t"
+    "str r5,  [%0, 0x28]\n\t"
+    "str r6,  [%0, 0x30]\n\t"
+    "str r7,  [%0, 0x38]\n\t"
+    "str r8,  [%0, 0x40]\n\t"
+    "str r9,  [%0, 0x48]\n\t"
+    "str r10, [%0, 0x50]\n\t"
+    "str r11, [%0, 0x58]\n\t"
+    "str r12, [%0, 0x60]\n\t"
+    "str r13, [%0, 0x68]\n\t"
+    "str r14, [%0, 0x70]\n\t"
+    "str r15, [%0, 0x78]\n\t"
     :                            /* no output */
     :"r" (&dwarf_regs[0])        /* input */
     :"%r0"                       /* clobbered */
