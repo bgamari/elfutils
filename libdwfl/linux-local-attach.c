@@ -45,7 +45,7 @@ local_memory_read (Dwfl *dwfl __attribute__ ((unused)),
 		   Dwarf_Addr addr, Dwarf_Word *result,
 		   void *arg __attribute__ ((unused)))
 {
-  *result = *(Dwarf_Word *) addr;
+  *result = *(Dwarf_Word *) (uintptr_t) addr;
   return true;
 }
 
