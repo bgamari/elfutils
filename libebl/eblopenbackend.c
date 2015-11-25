@@ -372,7 +372,8 @@ openbackend (Elf *elf, const char *emulation, GElf_Half machine)
 	result->dlhandle = NULL;
 	result->elf = elf;
 	result->name = machines[cnt].prefix;
-	fill_defaults (result);
+        fill_defaults (result);
+        fprintf(stderr, "ebl_openbackend: Failed to find backend DSO to handle machine.\n");
 
 	return result;
       }
