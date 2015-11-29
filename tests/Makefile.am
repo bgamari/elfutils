@@ -90,7 +90,8 @@ TESTS = run-arextract.sh run-arsymtest.sh newfile test-nlist \
 	run-find-prologues.sh run-allregs.sh run-addrcfi.sh \
 	run-nm-self.sh run-readelf-self.sh \
 	run-readelf-test1.sh run-readelf-test2.sh run-readelf-test3.sh \
-	run-readelf-test4.sh run-readelf-twofiles.sh \
+	run-readelf-test4.sh run-readelf-test5.sh \
+	run-readelf-twofiles.sh \
 	run-readelf-macro.sh run-readelf-loc.sh \
 	run-readelf-aranges.sh run-readelf-line.sh run-readelf-z.sh \
 	run-native-test.sh run-bug1-test.sh \
