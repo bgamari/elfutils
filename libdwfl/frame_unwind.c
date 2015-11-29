@@ -565,8 +565,24 @@ handle_cfi (Dwfl_Frame *state, Dwarf_Addr pc, Dwarf_CFI *cfi, Dwarf_Addr bias)
   bool ra_set = false;
   ebl_dwarf_to_regno (ebl, &ra);
 
+  fprintf(stderr, "\n");
+  fprintf(stderr, "Unwinding from %lx:\n", pc);
+  char *modname = "null";
+  if (cfi->dbg) modname = elf_getident(cfi->dbg->elf, NULL);
+  fprintf(stderr, "  mod        = %s\n", modname ? modname : "null");
+  fprintf(stderr, "  CIE offset = %lx\n", frame->fde->cie->offset);
+  if (frame->fde->cie->signal_frame)
+    fprintf(stderr, "  signal frame\n");
+
   for (unsigned regno = 0; regno < nregs; regno++)
     {
+      char regname[10];
+      {
+        const char *prefix, *setname;
+        int bits, type;
+        ebl_register_info(ebl, regno, regname, 10, &prefix, &setname, &bits, &type);
+      }
+
       Dwarf_Op reg_ops_mem[3], *reg_ops;
       size_t reg_nops;
       if (dwarf_frame_register (frame, regno, reg_ops_mem, &reg_ops,
@@ -574,22 +590,26 @@ handle_cfi (Dwfl_Frame *state, Dwarf_Addr pc, Dwarf_CFI *cfi, Dwarf_Addr bias)
 	{
 	  __libdwfl_seterrno (DWFL_E_LIBDW);
 	  continue;
-	}
+        }
       Dwarf_Addr regval;
       if (reg_nops == 0)
 	{
 	  if (reg_ops == reg_ops_mem)
 	    {
 	      /* REGNO is undefined.  */
-	      if (regno == ra)
-		unwound->pc_state = DWFL_FRAME_STATE_PC_UNDEFINED;
+              if (regno == ra) {
+                fprintf(stderr, "  reg %d = undefined\n", regno);
+                unwound->pc_state = DWFL_FRAME_STATE_PC_UNDEFINED;
+              }
 	      continue;
 	    }
 	  else if (reg_ops == NULL)
 	    {
 	      /* REGNO is same-value.  */
-	      if (! state_get_reg (state, regno, &regval))
-		continue;
+              if (! state_get_reg (state, regno, &regval)) {
+                fprintf(stderr, "  reg %d = same = %lx\n", regno, regval);
+                continue;
+              }
 	    }
 	  else
 	    {
@@ -603,7 +623,15 @@ handle_cfi (Dwfl_Frame *state, Dwarf_Addr pc, Dwarf_CFI *cfi, Dwarf_Addr bias)
 	     register will look as unset causing an error later, if used.
 	     But PPC32 does not use such registers.  */
 	  continue;
-	}
+        }
+
+      if (reg_nops > 0) {
+        fprintf(stderr, "  reg %s = ", regname);
+        for (unsigned i = 0; i < reg_nops; i++) {
+          fprintf(stderr, "i ");
+        }
+        fprintf(stderr, "    = %lx\n", regval);
+      }
 
       /* Some architectures encode some extra info in the return address.  */
       if (regno == frame->fde->cie->return_address_register)
